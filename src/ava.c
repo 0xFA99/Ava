@@ -5,7 +5,7 @@
 #include "include/save_to_file.h"
 #include "include/htmlparsing.h"
 
-// #include "test/offline_doc.h"
+#include "test/offline_doc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -113,9 +113,6 @@ main(int argc, char *argv[])
 
     // HTML REQUEST
     char *response = https_request(query);
-
-    // OFFLINE
-    // char *response = get_doc("");
 
     if (save_html) {
         save_to_file(response);
