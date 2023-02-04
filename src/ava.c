@@ -1,12 +1,16 @@
+#include "ava.h"
+
 #include "include/getting_html.h"
 #include "include/global.h"
 #include "include/save_to_file.h"
 #include "include/htmlparsing.h"
-#include "ava.h"
+
+// #include "test/offline_doc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
 #include "cmake-build-debug/config.h"
 
 void
@@ -108,42 +112,18 @@ main(int argc, char *argv[])
     }
 
     // HTML REQUEST
-    // char *response = https_request(query);
+    char *response = https_request(query);
 
-    // xmlDocPtr response = xmlParseDoc("/home/margaretha/.cache/ava/05-02:02:52_ava.html");
-
-    FILE *file = fopen("/home/margaretha/.cache/ava/05-02:02:52_ava.html", "r");
-
-    if (file == NULL)
-        return 1;
-
-    fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
-    rewind(file);
-
-    char *response = malloc(file_size + 1);
-    if (response == NULL) {
-        fclose(file);
-        return 1;
-    }
-
-    size_t bytes_read = fread(response, 1, file_size, file);
-    if (bytes_read != file_size) {
-        free(response);
-        fclose(file);
-        return 1;
-    }
-
-    response[file_size] = '\0';
-
-    fclose(file);
+    // OFFLINE
+    // char *response = get_doc("");
 
     if (save_html) {
         save_to_file(response);
     }
-    // PROCESSING
 
+    // PROCESSING
     parse_html(response);
+
     free(response);
 
     return 0;

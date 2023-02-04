@@ -55,6 +55,8 @@ print_output(unsigned char *output)
     printf("---\n");
     printf("%s\n", output);
     printf("---\n");
+
+    EXIT_SUCCESS;
 }
 
 void

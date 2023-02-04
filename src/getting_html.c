@@ -32,7 +32,6 @@ set_url(const char *lang, const char *text)
 
     // Dump the result
     char *dump_result = strdup(result);
-    printf("URL: %s\n", dump_result);
 
     // Deallocated
     free(result);
