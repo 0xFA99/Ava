@@ -16,6 +16,7 @@ void search_know_right(htmlDocPtr*);
 void search_unit(htmlDocPtr*);
 void search_translate(htmlDocPtr*);
 void search_quotes(htmlDocPtr*);
+void search_lists(htmlDocPtr*);
 
 void parse_html(const char*);
 

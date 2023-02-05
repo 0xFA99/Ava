@@ -151,6 +151,28 @@ search_quotes(htmlDocPtr *doc)
 }
 
 void
+search_lists(htmlDocPtr *doc)
+{
+    xmlXPathContextPtr xpathCtx = xmlXPathNewContext(*doc);
+    xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression((xmlChar *)"//span[@class='hgKElc']", xpathCtx);
+    xmlNodeSetPtr nodes = xpathObj->nodesetval;
+    if ((nodes == NULL) || (nodes->nodeNr == 0))
+        return;
+
+    for (int i = 0; i < nodes->nodeNr; i++) {
+        xmlNodePtr node = nodes->nodeTab[i];
+        xmlChar *content = xmlNodeGetContent(node);
+
+        printf("%s\n", content);
+
+        xmlFree(content);
+    }
+
+    xmlXPathFreeObject(xpathObj);
+    xmlXPathFreeContext(xpathCtx);
+}
+
+void
 parse_html(const char *response)
 {
     htmlDocPtr doc;
@@ -165,8 +187,9 @@ parse_html(const char *response)
     search_know_right(&doc);
     search_unit(&doc);
     search_translate(&doc);
-     */
     search_quotes(&doc);
+     */
+    search_lists(&doc);
 
     xmlFreeDoc(doc);
 }
