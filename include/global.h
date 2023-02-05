@@ -24,6 +24,7 @@ const char *get_os_lang();
 char *get_cache_dir();
 void print_output(unsigned char*);
 void print_error();
+char *recode_string(unsigned char*);
 
 #ifdef __cplusplus
 }; /* extern "C" */
