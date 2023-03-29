@@ -6,6 +6,8 @@
 #include <time.h>
 #include <iconv.h>
 
+#include <sys/stat.h>
+
 #include "utils.h"
 
 void
@@ -28,7 +30,7 @@ die(const char *fmt, ...)
 }
 
 char*
-get_cache_dir()
+get_cache_dir(void)
 {
     char *cache_dir = getenv("XDG_CACHE_HOME");
     if (!cache_dir || !cache_dir[0]) {
@@ -49,28 +51,31 @@ get_cache_dir()
 }
 
 char*
-recode_string(unsigned char *text)
+iso8859_1_to_utf8(const char *iso8859_1_str)
 {
-    size_t len = strlen((char *) text);
-    char *output_buffer = (char *) calloc(len + 1, sizeof(char));
-    char *output_ptr = output_buffer;
-    size_t output_size = len;
+    size_t iso8859_1_len = strlen(iso8859_1_str);
+    size_t utf8_len = iso8859_1_len * 4;
+    char *utf8_str = (char *)malloc(utf8_len);
 
-    iconv_t conv_desc = iconv_open("ISO-8859-1", "UTF-8");
-    if (conv_desc == (iconv_t) -1) {
-        free(output_buffer);
-        return NULL;
+    iconv_t conv = iconv_open("UTF-8", "ISO-8859-1");
+    
+    if (conv == (iconv_t)(1)) {
+        exit(1);
     }
 
-    size_t result = iconv(conv_desc, &text, &output_size, &output_ptr, &output_size);
+    char *in_buf = (char *)iso8859_1_str;
+    char *out_buf = utf8_str;
+    size_t in_len = iso8859_1_len;
+    size_t out_len = utf8_len;
 
-    if (result == (size_t) - 1) {
-        free(output_buffer);
-        return (char *) text;
+    if (iconv(conv, &in_buf, &in_len, &out_buf, &out_len) == (size_t)(-1)) {
+        exit(1);
     }
 
-    iconv_close(conv_desc);
-    return output_buffer;
+    iconv_close(conv);
+    utf8_str[utf8_len - out_len] = '\0';
+
+    return utf8_str;
 }
 
 void
@@ -99,4 +104,16 @@ save_to_file(const char *response)
     fprintf(file, "%s", response);
     printf("File saved in \'%s\'\n", filename);
     fclose(file);
+}
+
+void
+print_result(const char *result)
+{
+    printf("---\n%s\n---\n", result);
+}
+
+void
+print_no_result(void)
+{
+    printf("---\nNo result!\n---\n");
 }

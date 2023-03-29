@@ -1,0 +1,136 @@
+.TH AVA 1 ava\-VERSION
+.SH NAME
+ava \- assitance virtual answer
+.SH SYNOPSIS
+.B ava
+.RB [ \-v ]
+.SH DESCRIPTION
+Ava is an innovative virtual assistant designed to help you find information
+online quickly and easily. With its intuitive interface and powerful search
+capabilities, Ava makes it easy to get the answers you need without the hassle
+of navigating through Google search engines. Whether you need to solve a math
+equalition, look up the lyrics to your favorite song, or translate a piece of
+text, Ava has got you covered.
+.P
+One of the key features of Ava is its flexibility. Unlike other virtual
+assistant that are limited in their scope, Ava supports a wide range of search
+types, making it a valuable tool for anyone looking for information on the web.
+From basic arithmatic to complex mathematical expressions, Ava's math search
+type can handle it all. And with its lyrics search type, you can quickly and
+easily find can words to any song, no matter how obscure. The translation search
+type is also incredibly useful for anyone who needs to communicate in different
+languages.
+.P
+Ava's user-friendly interface is another major advantage. With its simple,
+streamlined design, Ava is easy to use, even for those who are not tech-savvy.
+The interface is intuitive and responsive, making it a pleasure to work with.
+And with its advanced search capabilities, Ava can provide results that are more
+accurate and relevant than those offered by Google search engines and tools.
+.P
+Overall, Ava is a powerful and versatile tool that can save you time and
+frustration when looking for information online. With its innovative features
+and user-friendly interface, Ava is a must-have tool for anyone who needs to
+find information quickly and easily.
+.P
+So why wait? Download Ava and start
+enjoying the benefits of this amazing virtual assistant!
+.SH OPTIONS
+.SS Global
+.TP
+.B \-h
+Show this help message and exit.
+.TP
+.B \-v
+Print ava version info and exit.
+.TP
+.B \-r
+Raw search results. (no pretty output, no colors)
+.TP
+.B \-q
+Only output search results. (silences "Did you mena?", greeting, usage)
+.TP
+.B \-a
+Print all valid answers.
+.TP
+.B \-u
+Prints out the top handful or URLs for your search query. (this is automatically
+printed out if ava can't find you an answer)
+.TP
+.B \-b
+Tries to select the best answer based on keywords at the start and end of your
+query. (experimental - eg: define WORD, SONG lyrics, PERSON quotes, weather
+CITY, FILM cast)
+.TP
+.B \-t
+Pick answer to test. (you can specify multiple answers using ava_NAME in your
+query
+.TP
+.B \-l
+use LANG_[lang] in your query to override the language used. (eg: ava -l
+LANG_en_US my search query)
+.SS Variables Support
+.TP
+.B AVA_LANG=[lang]
+sets default search language (eg: AVA_LANG='en_US')
+.TP
+.B AVA_DELAY=[int]
+if you find moer than one answer is being printed (and you're not using -a),
+increase this number by a little (you want it to be as low as possible), default
+value is 250 (eg: AVA_DELAY=270)
+.SS Developer Flags
+.TP
+.B \-d
+Prints debug info along with results
+.TP
+.B \-s
+saves HTML for this query to $XDG_CACHE_HOME/ava/ava-[date].html
+.TP
+.B \-c
+use most recent cached result and query, this can be combined with -t flag to
+more quickly test for different answer
+.TP
+.B \-p
+disable pipe support (it can break some scripts including our own test script)
+.SH USAGE
+Ava is designed to be easy to use and intuitive. To use Ava, simply run the
+`ava` command followed by the options flags you want to perform and any relevant
+query parameters. For example:
+.P
+.B $ ava "2+2"
+.P
+This command will search for the solution to the math equation "2+2" and display
+the result in the terminal.
+.SH ISSUES
+Like any software tool, Ava may encounter occasional issues or bugs that could
+affect its performance. While the development team hard to ensure that Ava is
+stable and reliable, there are a few potential issues that users should be aware
+of. These include search errors, slow response times, and compatibility issues
+with certain devices or operations systems.
+.P
+One common issue that users may encounter is search errors. These can occur when
+Ava is unable to find the information that the user is looking for, either due
+to incomplete or inaccurate search terms, or because the information is not
+available online. While Ava is designed to provide accurate and relevant search
+results, it may not always be able to find the exact information that the user
+needs.
+.P
+Another potential issue is slow response times. This can happen when Ava is
+processing a large amount of data, or when the user's internet connection is
+slow or unstable. While the development team is constantly working to optimize
+Ava's performance and improve response times, users may experience occasional
+delays or lag when using the tool.
+.P
+Finally, some users may encouter compatibility issues with certain devices or
+oprating systems. While Ava is designed to work on a wide range of devices and
+platforms, there may be some instances where it is not fully compatible with the
+user's system. In such cases, users may need to contact the development team for
+support or seek alternative solutions.
+.P
+Overall, while there are some potential issues that users may encounter when
+using Ava, the development team is committed to addressing these and providing
+the best possible user experience. if you encounter any issues or have any
+questions or concerns about Ava, be sure to contact the support team for
+assistance.
+.SH BUGS
+Send all bug report to margarethasaputri144@gmail.com
+

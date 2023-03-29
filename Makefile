@@ -1,7 +1,10 @@
 include config.mk
 
-SRC = ava.c utils.c
+SRC = answer.c ava.c utils.c
 OBJ = ${SRC:.c=.o}
+
+VALGRIND = valrind --leak-check=full --show-leak-kinds=all
+VALGRIND_OPTS = -v
 
 all: options ava
 
@@ -28,7 +31,7 @@ clean:
 dist: clean
 	mkdir -p ava-${VERSION}
 	cp -R LICENSE Makefile README config.def.h config.mk\
-		ava.1 ${SRC} ava-${VERSION}
+		ava.1 answer.h utils.h ${SRC} ava-${VERSION}
 	tar -cf ava-${VERSION}.tar ava-${VERSION}
 	gzip ava-${VERSION}.tar
 	rm -rf ava-${VERSION}
@@ -44,5 +47,8 @@ install: all
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/ava\
 		${DESTDIR}${MANPREFIX}/man1/ava.1
+
+valgrind: ${OBJ}
+	${VALGRIND} ${VALGRIND_OPTS} ${CC} -o $@ ${OBJ} ${LDFLAGS}
 
 .PHONY: all options clean dist install uninstall

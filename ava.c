@@ -1,33 +1,40 @@
 #include <string.h>
-#include <libxml/xpathInternals.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <unistd.h>
 #include <libxml/HTMLparser.h>
 #include <curl/curl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #include "config.h"
 #include "utils.h"
+#include "answer.h"
 
 char *set_url(const char*, const char*);
 char *https_request(const char *);
-void search_math(htmlDocPtr*);
-void search_lyric_us(htmlDocPtr*);
-void search_currency(htmlDocPtr*);
-void search_know_right(htmlDocPtr*);
-void search_unit(htmlDocPtr*);
-void search_translate(htmlDocPtr*);
-void search_quotes(htmlDocPtr*);
-void search_lists(htmlDocPtr*);
-void search_weather(htmlDocPtr*);
-void parse_html(const char*);
-void print_output(unsigned char*);
-void print_error();
 static unsigned int memory_callback(void*, unsigned int, unsigned int, void *);
 
 struct Response {
     char *data;
     unsigned int size;
 };
+
+struct XPathQuery {
+    char *data;
+    const char *xpath;
+};
+
+bool raw = false;
+bool quiet = false;
+bool all = false;
+bool best_match = false;
+bool pick_search = false;
+bool pick_lang = false;
+bool debug = false;
+bool save_html = false;
+bool use_cache = false;
+bool no_pipe = false;
+bool plus_urls = false;
+
 // =======================
 
 unsigned int
@@ -67,7 +74,8 @@ set_url(const char *lang, const char *text)
     curl_url_set(newURL, CURLUPART_PATH, "search", 0);
     curl_url_set(newURL, CURLUPART_QUERY, language, CURLU_APPENDQUERY);
     curl_url_set(newURL, CURLUPART_QUERY, query, CURLU_APPENDQUERY | CURLU_URLENCODE);
-    curl_url_set(newURL, CURLUPART_URL, &result, 0);
+
+    curl_url_get(newURL, CURLUPART_URL, &result, 0);
 
     char *dump_result = strdup(result);
 
@@ -83,7 +91,7 @@ set_url(const char *lang, const char *text)
 char*
 https_request(const char *query)
 {
-    char *url = set_url(getenv("LANG"), query);
+    char *url = set_url("en_US", query);
     char *dump_response = NULL;
 
     CURL *curl;
@@ -113,36 +121,104 @@ https_request(const char *query)
     return dump_response;
 }
 
-void
-parse_html(const char *response)
-{
-    htmlDocPtr doc = htmlReadMemory(response, strlen(response), NULL, "ISO-8859-1",
-            HTML_PARSE_NOBLANKS | HTML_PARSE_NOERROR | HTML_PARSE_NOWARNING | HTML_PARSE_NONET);
-
-    xmlFreeDoc(doc);
-}
-
-void
-print_output(unsigned char *output)
-{
-    printf("---\n");
-    printf("%s\n", output);
-    printf("---\n");
-}
-
-void
-print_error()
-{
-    printf("---\n");
-    printf("No Result !\n");
-    printf("---\n");
-}
-
-// =======================
-
 int
 main(int argc, char *argv[])
 {
+    int c;
+    char *query = NULL;
+
+    while ((c = getopt(argc, argv, "rvhqabtldscpu:")) != -1) {
+        switch (c) {
+            case 'r':
+                raw = true;
+                break;
+            case 'v':
+                printf("ava Version %s\n", VERSION);
+                break;
+            case 'h':
+                // print_help();
+                break;
+            case 'q':
+                quiet = true;
+                break;
+            case 'a':
+                all = true;
+                break;
+            case 'b':
+                best_match = true;
+                break;
+            case 't':
+                pick_search = true;
+                break;
+            case 'l':
+                pick_lang = true;
+                break;
+            case 'd':
+                debug = true;
+                break;
+            case 's':
+                save_html = true;
+                break;
+            case 'c':
+                use_cache = true;
+                break;
+            case 'p':
+                no_pipe = true;
+                break;
+            case 'u':
+                plus_urls = true;
+                break;
+            case '?':
+                fprintf(stderr, "Unrecognized option: '-%c'\n", optopt);
+                break;
+            default:
+                break;
+        }
+    }
+    if (argc > 1 && argv[argc - 1][0] != '-') {
+        query = argv[argc - 1];
+    }
+
+    if (query == NULL) {
+        die("Usage: ava [options] query\n");
+    }
+
+    // ONLINE
+    char *response = https_request(query);
+
+    // OFFLINE
+   //  FILE *file = fopen("/home/saputri/.cache/ava/28-21:02:25_ava.html", "r");
+
+   //  if (file == NULL) return 1;
+
+   //  fseek(file, 0, SEEK_END);
+   //  long file_size = ftell(file);
+   //  rewind(file);
+
+   //  char *response = malloc(file_size + 1);
+   //  if (response == NULL) {
+   //      fclose(file);
+   //      return 1;
+   //  }
+
+   //  size_t bytes_read = fread(response, 1, file_size, file);
+   //  if (bytes_read != file_size) {
+   //      free(response);
+   //      fclose(file);
+   //      return 1;
+   //  }
+
+   //  response[file_size] = '\0';
+
+   //  fclose(file);
+
+    if (save_html) {
+        save_to_file(response);
+    }
+
+    parse_html(debug, response);
+
+    free(response);
 
     return 0;
 }
