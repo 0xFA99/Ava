@@ -5,37 +5,11 @@
 #include <libxml/HTMLparser.h>
 #include <curl/curl.h>
 
+#include "ava.h"
+
 #include "config.h"
 #include "utils.h"
 #include "answer.h"
-
-char *set_url(const char*, const char*);
-char *https_request(const char *);
-static unsigned int memory_callback(void*, unsigned int, unsigned int, void *);
-
-struct Response {
-    char *data;
-    unsigned int size;
-};
-
-struct XPathQuery {
-    char *data;
-    const char *xpath;
-};
-
-bool raw = false;
-bool quiet = false;
-bool all = false;
-bool best_match = false;
-bool pick_search = false;
-bool pick_lang = false;
-bool debug = false;
-bool save_html = false;
-bool use_cache = false;
-bool no_pipe = false;
-bool plus_urls = false;
-
-// =======================
 
 unsigned int
 memory_callback(void *content, unsigned int size, unsigned int nmemb, void *userp)
@@ -187,36 +161,36 @@ main(int argc, char *argv[])
     char *response = https_request(query);
 
     // OFFLINE
-   //  FILE *file = fopen("/home/saputri/.cache/ava/28-21:02:25_ava.html", "r");
+    // FILE *file = fopen("/home/saputri/.cache/ava/30-14:48:33_ava.html", "r");
 
-   //  if (file == NULL) return 1;
+    // if (file == NULL) return 1;
 
-   //  fseek(file, 0, SEEK_END);
-   //  long file_size = ftell(file);
-   //  rewind(file);
+    // fseek(file, 0, SEEK_END);
+    // long file_size = ftell(file);
+    // rewind(file);
 
-   //  char *response = malloc(file_size + 1);
-   //  if (response == NULL) {
-   //      fclose(file);
-   //      return 1;
-   //  }
+    // char *response = malloc(file_size + 1);
+    // if (response == NULL) {
+    //     fclose(file);
+    //     return 1;
+    // }
 
-   //  size_t bytes_read = fread(response, 1, file_size, file);
-   //  if (bytes_read != file_size) {
-   //      free(response);
-   //      fclose(file);
-   //      return 1;
-   //  }
+    // size_t bytes_read = fread(response, 1, file_size, file);
+    // if (bytes_read != file_size) {
+    //     free(response);
+    //     fclose(file);
+    //     return 1;
+    // }
 
-   //  response[file_size] = '\0';
+    // response[file_size] = '\0';
 
-   //  fclose(file);
+    // fclose(file);
 
     if (save_html) {
         save_to_file(response);
     }
 
-    parse_html(debug, response);
+    parse_html(quiet, response);
 
     free(response);
 

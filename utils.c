@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 
 #include "utils.h"
+#include "answer.h"
 
 void
 die(const char *fmt, ...)
@@ -109,7 +110,9 @@ save_to_file(const char *response)
 void
 print_result(const char *result)
 {
-    printf("---\n%s\n---\n", result);
+    printf(GREEN "---\n" RESET);
+    printf("%s\n", result);
+    printf(GREEN "---\n" RESET);
 }
 
 void

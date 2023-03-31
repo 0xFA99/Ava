@@ -13,7 +13,7 @@ LIBS = -lcurl -lxml2
 
 # flags
 CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700L -DVERSION=\"${VERSION}\"
-CFLAGS	 = -std=c99 -pedantic -Wall -Wno-deprecated-declarations -Os ${XML2INC} ${CPPFLAGS}
+CFLAGS	 = -std=c99 -pedantic -Wall -Wno-deprecated-declarations -O3 ${XML2INC} ${CPPFLAGS}
 LDFLAGS  = ${LIBS}
 
 # compiler and linker
