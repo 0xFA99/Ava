@@ -21,6 +21,7 @@ typedef struct {
 #define MAGENTA "\033[1;35m"
 #define CYAN    "\033[1;36m"
 
+void search_richcast(const xmlXPathContextPtr*, const char*);
 void search_math(const xmlXPathContextPtr*, const char*);
 void search_lyric_us(const xmlXPathContextPtr*, const char*);
 void search_translate(const xmlXPathContextPtr*, const char*);
@@ -37,6 +38,9 @@ void search_pronounce(const xmlXPathContextPtr*, const char*);
 void search_basic(const xmlXPathContextPtr*, const char*);
 void search_feat(const xmlXPathContextPtr*, const char*);
 void search_lists(const xmlXPathContextPtr*, const char*);
+
+void helper_single_answer(const xmlXPathContextPtr*, const char*);
+void helper_multi_answer(const xmlXPathContextPtr*, const char*);
 
 void parse_html(bool, const char*);
 

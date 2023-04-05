@@ -53,7 +53,6 @@ set_url(const char *lang, const char *text)
 
     char *dump_result = strdup(result);
 
-    free(result);
     free(language);
     free(query);
 
@@ -107,11 +106,11 @@ main(int argc, char *argv[])
                 raw = true;
                 break;
             case 'v':
-                printf("ava Version %s\n", VERSION);
-                break;
+                die("ava Version %s\n", VERSION);
+				return 1;
             case 'h':
-                // print_help();
-                break;
+				die(GREEN "Usage: " RESET "ava " YELLOW "[options] " RESET MAGENTA "\"query\"\n" RESET);
+				return 1;
             case 'q':
                 quiet = true;
                 break;
@@ -144,7 +143,7 @@ main(int argc, char *argv[])
                 break;
             case '?':
                 fprintf(stderr, "Unrecognized option: '-%c'\n", optopt);
-                break;
+				return 1;
             default:
                 break;
         }
@@ -154,11 +153,10 @@ main(int argc, char *argv[])
     }
 
     if (query == NULL) {
-        die("Usage: ava [options] query\n");
+	    die(GREEN "Usage: " RESET "ava " YELLOW "[options] " RESET MAGENTA "\"query\"\n" RESET);
+		return 1;
     }
 
-    // ONLINE
-    char *response = https_request(query);
 
     // OFFLINE
     // FILE *file = fopen("/home/saputri/.cache/ava/30-14:48:33_ava.html", "r");
@@ -186,13 +184,74 @@ main(int argc, char *argv[])
 
     // fclose(file);
 
-    if (save_html) {
-        save_to_file(response);
-    }
+	// if (debug) {
+	// 	double response_time, parsing_time;
 
-    parse_html(quiet, response);
+	// 	clock_t start_time = clock();
+	// 	char *response = https_request(query);
+	// 	clock_t end_time = clock();
 
-    free(response);
+	// 	response_time = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+
+	// 	if (save_html)
+	// 		save_to_file(response);
+
+	// 	start_time = clock();
+	// 	parse_html(quiet, response);
+	// 	end_time = clock();
+
+	// 	parsing_time = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+
+	// 	free(response);
+
+	// 	printf("Response Time: %f\n", response_time);
+	// 	printf("Parsing Time: %f\n", parsing_time);
+	// } else {
+	// 	char *response = https_request(query);
+
+	// 	if (save_html)
+	// 		save_to_file(response);
+
+	// 	parse_html(quiet, response);
+
+	// 	free(response);
+	// }
+
+	char *response = NULL;
+
+	if (debug) {
+		double response_time, parsing_time;
+		struct timespec start_time, end_time;
+
+		clock_gettime(CLOCK_REALTIME, &start_time);
+		response = https_request(query);
+		clock_gettime(CLOCK_REALTIME, &end_time);
+
+		response_time = (double)(end_time.tv_sec - start_time.tv_sec)
+					  + (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+
+		if (save_html)
+			save_to_file(response);
+
+		clock_gettime(CLOCK_REALTIME, &start_time);
+		parse_html(quiet, response);
+		clock_gettime(CLOCK_REALTIME, &end_time);
+
+		parsing_time = (double)(end_time.tv_sec - start_time.tv_sec)
+					 + (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+
+		printf("Response Time: %f\n", response_time);
+		printf("Parsing Time: %f\n", parsing_time);
+	} else {
+		response = https_request(query);
+
+		if (save_html)
+			save_to_file(response);
+
+		parse_html(quiet, response);
+	}
+
+	free(response);
 
     return 0;
 }
