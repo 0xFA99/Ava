@@ -159,7 +159,7 @@ main(int argc, char *argv[])
 
 
     // OFFLINE
-    // FILE *file = fopen("/home/saputri/.cache/ava/30-14:48:33_ava.html", "r");
+    // FILE *file = fopen("/home/saputri/.cache/ava/12-10:12:21_ava.html", "r");
 
     // if (file == NULL) return 1;
 
@@ -234,7 +234,7 @@ main(int argc, char *argv[])
 			save_to_file(response);
 
 		clock_gettime(CLOCK_REALTIME, &start_time);
-		parse_html(quiet, response);
+		parse_html(debug, all, quiet, response);
 		clock_gettime(CLOCK_REALTIME, &end_time);
 
 		parsing_time = (double)(end_time.tv_sec - start_time.tv_sec)
@@ -248,7 +248,7 @@ main(int argc, char *argv[])
 		if (save_html)
 			save_to_file(response);
 
-		parse_html(quiet, response);
+		parse_html(debug, all, quiet, response);
 	}
 
 	free(response);

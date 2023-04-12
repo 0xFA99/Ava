@@ -118,5 +118,7 @@ print_result(const char *result)
 void
 print_no_result(void)
 {
-    printf("---\nNo result!\n---\n");
+	printf(GREEN "---\n" RESET);
+    printf("No result!\n");
+	printf(GREEN "---\n" RESET);
 }

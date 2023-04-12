@@ -8,11 +8,6 @@ extern "C" {
 #include <stdbool.h>
 #include <libxml/xpathInternals.h>
 
-typedef struct {
-    xmlDocPtr doc;
-    const char *xpath;
-} thread_args;
-
 #define RESET   "\033[0m"
 #define BOLD    "\033[1m"
 #define RED     "\033[1;31m"
@@ -21,9 +16,12 @@ typedef struct {
 #define MAGENTA "\033[1;35m"
 #define CYAN    "\033[1;36m"
 
+bool helper_single_answer(const xmlXPathContextPtr*, const char*);
+bool helper_multi_answer(bool, const xmlXPathContextPtr*, const char*);
+
 void search_richcast(const xmlXPathContextPtr*, const char*);
 void search_math(const xmlXPathContextPtr*, const char*);
-void search_lyric_us(const xmlXPathContextPtr*, const char*);
+void search_lyrics(const xmlXPathContextPtr*, const char*);
 void search_translate(const xmlXPathContextPtr*, const char*);
 void search_currency(const xmlXPathContextPtr*, const char*);
 void search_quote(const xmlXPathContextPtr*, const char*);
@@ -38,11 +36,10 @@ void search_pronounce(const xmlXPathContextPtr*, const char*);
 void search_basic(const xmlXPathContextPtr*, const char*);
 void search_feat(const xmlXPathContextPtr*, const char*);
 void search_lists(const xmlXPathContextPtr*, const char*);
+void search_top_links(const xmlXPathContextPtr*, const char*);
 
-void helper_single_answer(const xmlXPathContextPtr*, const char*);
-void helper_multi_answer(const xmlXPathContextPtr*, const char*);
-
-void parse_html(bool, const char*);
+void parse_html(bool, bool, bool, const char*);
+void add_answer(const char*);
 
 #ifdef __cplusplus
 };
