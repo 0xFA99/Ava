@@ -8,6 +8,8 @@ extern "C" {
 #include <stdbool.h>
 #include <libxml/xpathInternals.h>
 
+#include "ava.h"
+
 #define RESET   "\033[0m"
 #define BOLD    "\033[1m"
 #define RED     "\033[1;31m"
@@ -38,7 +40,7 @@ void search_feat(const xmlXPathContextPtr*, const char*);
 void search_lists(const xmlXPathContextPtr*, const char*);
 void search_top_links(const xmlXPathContextPtr*, const char*);
 
-void parse_html(bool, bool, bool, const char*);
+void parse_html(const struct Flags, const char*);
 void add_answer(const char*);
 
 #ifdef __cplusplus

@@ -7,22 +7,15 @@
 #include "utils.h"
 #include "config.h"
 
-const char **answer_founds = NULL;
-
 bool found_answer = false;
-bool all_answer = false;
-bool debug_flag = false;
-
+const char **answer_founds = NULL;
+struct Flags current_flag;
 short num_answers = 0;
 
 void
 add_answer(const char *new_answer)
 {
 	answer_founds = (const char **) realloc(answer_founds, (num_answers + 1) * sizeof(const char *));
-	if (answer_founds == NULL) {
-		printf("Failed to allocate memory\n");
-	}
-
 	answer_founds[num_answers] = new_answer;
 	num_answers++;
 }
@@ -89,7 +82,7 @@ helper_multi_answer(bool use_number, const xmlXPathContextPtr *xpathCtx, const c
 void
 search_math(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Math");
 		}
@@ -101,7 +94,7 @@ search_math(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_lyrics(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_multi_answer(false, xpathCtx, xpath)) {
 			add_answer("Lyric");
 		}
@@ -113,7 +106,7 @@ search_lyrics(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_translate(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Translate");
 		}
@@ -125,7 +118,7 @@ search_translate(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_currency(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Currency");
 		}
@@ -137,7 +130,7 @@ search_currency(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_quote(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Quote");
 		}
@@ -149,7 +142,7 @@ search_quote(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_holiday(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_multi_answer(true, xpathCtx, xpath)) {
 			add_answer("Holiday");
 		}
@@ -161,7 +154,7 @@ search_holiday(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_tracklist(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_multi_answer(true, xpathCtx, xpath)) {
 			add_answer("Tracklist");
 		}
@@ -173,7 +166,7 @@ search_tracklist(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_know_right(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Know-Right");
 		}
@@ -185,7 +178,7 @@ search_know_right(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_unit(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Unit");
 		}
@@ -232,7 +225,7 @@ search_weather(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_datetime(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Datetime");
 		}
@@ -244,7 +237,7 @@ search_datetime(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_pronounce(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Pronounce");
 		}
@@ -256,7 +249,7 @@ search_pronounce(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_basic(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Basic");
 		}
@@ -268,7 +261,7 @@ search_basic(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_feat(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Feat");
 		}
@@ -280,7 +273,7 @@ search_feat(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_lists(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_multi_answer(true, xpathCtx, xpath)) {
 			add_answer("List");
 		}
@@ -292,7 +285,7 @@ search_lists(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_define(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_single_answer(xpathCtx, xpath)) {
 			add_answer("Define");
 		}
@@ -304,7 +297,7 @@ search_define(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 void
 search_richcast(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 {
-	if (debug_flag) {
+	if (current_flag.debug) {
 		if (helper_multi_answer(true, xpathCtx, xpath)) {
 			add_answer("Richcast");
 		}
@@ -353,10 +346,9 @@ search_top_links(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 }
 
 void
-parse_html(bool flag_debug, bool flag_all, bool flag_quiet, const char *response)
+parse_html(struct Flags p_flag, const char *response)
 {
-	all_answer = flag_all;
-	debug_flag = flag_debug;
+	current_flag = p_flag;
 
 	int response_len = (int) strlen(response);
 	htmlDocPtr doc = htmlReadMemory(response, response_len, NULL, encode,
@@ -368,7 +360,7 @@ parse_html(bool flag_debug, bool flag_all, bool flag_quiet, const char *response
 
 	xmlXPathContextPtr xpathCtx = xmlXPathNewContext(doc);
 
-	if (!flag_quiet) {
+	if (!current_flag.quiet) {
 		xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression((xmlChar *) "//a[@class='gL9Hy']/b", xpathCtx);
 		xmlNodeSetPtr nodes = xpathObj->nodesetval;
 
@@ -395,7 +387,7 @@ parse_html(bool flag_debug, bool flag_all, bool flag_quiet, const char *response
 
 	int size = sizeof(answer_list) / sizeof(answer_list[0]);
 
-	if (all_answer) {
+	if (current_flag.all) {
 		for (int i = 0; i < size; i++) {
 			(*answers[i])(&xpathCtx, answer_list[i]);
 		}
@@ -409,10 +401,12 @@ parse_html(bool flag_debug, bool flag_all, bool flag_quiet, const char *response
 
 	if (!found_answer) {
 		print_no_result();
-		search_top_links(&xpathCtx, "//div[@class='yuRUbf']/a/h3");
+		if (current_flag.plus_urls) {
+			search_top_links(&xpathCtx, "//div[@class='yuRUbf']/a/h3");
+		}
 	}
 
-	if (debug_flag) {
+	if (current_flag.debug) {
 		printf("Answer founds: ");
 		if (num_answers == 0) {
 			printf("No answer found!");

@@ -1,9 +1,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <unistd.h>
 #include <libxml/HTMLparser.h>
 #include <curl/curl.h>
+#include <getopt.h>
 
 #include "ava.h"
 
@@ -97,9 +97,10 @@ https_request(const char *query)
 int
 main(int argc, char *argv[])
 {
-    int c;
+	int opt;
     char *query = NULL;
 
+	/*
     while ((c = getopt(argc, argv, "rvhqabtldscpu:")) != -1) {
         switch (c) {
             case 'r':
@@ -148,78 +149,90 @@ main(int argc, char *argv[])
                 break;
         }
     }
-    if (argc > 1 && argv[argc - 1][0] != '-') {
-        query = argv[argc - 1];
-    }
+    */
+
+	struct Flags SFlags = { false, false, false, false, false, false };
+	struct option long_opts[] = {
+			{"raw",     no_argument, NULL, 'r'},
+			{"version", no_argument, NULL, 'v'},
+			{"help",    no_argument, NULL, 'h'},
+			{"quiet",   no_argument, NULL, 'q'},
+			{"all",     no_argument, NULL, 'a'},
+			{"debug", no_argument, NULL, 'd' },
+			{"save", no_argument, NULL, 's' },
+			{"plus_urls", no_argument, NULL, 'u' }
+	};
+
+	while ((opt = getopt_long(argc, argv, "rvhqadsu", long_opts, NULL)) != -1) {
+		switch (opt) {
+			case 'r':
+				SFlags.raw = true; break;
+			case 'v':
+				die("AVA Version: %s\n", VERSION); return 1;
+			case 'h':
+				die(GREEN "Usage: " RESET "ava " YELLOW "[options] " RESET MAGENTA "\"query\"\n" RESET);
+				return 1;
+			case 'q':
+				SFlags.quiet = true; break;
+			case 'a':
+				SFlags.all = true; break;
+			case 'd':
+				SFlags.debug = true; break;
+			case 's':
+				SFlags.save_html = true; break;
+			case 'u':
+				SFlags.plus_urls = true; break;
+			case '?':
+				die("Invalid option\n"); break;
+			default:
+				die("Unknown option\n"); break;
+		}
+	}
+
+	if (argc > optind) {
+		query = argv[argc - 1];
+		if (strlen(query) == 0) {
+			die("Query: (empty)\n");
+			return 1;
+		}
+	}
 
     if (query == NULL) {
 	    die(GREEN "Usage: " RESET "ava " YELLOW "[options] " RESET MAGENTA "\"query\"\n" RESET);
 		return 1;
     }
 
+    /*
+     * OFFLINE
+    FILE *file = fopen("/home/saputri/.cache/ava/12-10:12:21_ava.html", "r");
 
-    // OFFLINE
-    // FILE *file = fopen("/home/saputri/.cache/ava/12-10:12:21_ava.html", "r");
+    if (file == NULL) return 1;
 
-    // if (file == NULL) return 1;
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    rewind(file);
 
-    // fseek(file, 0, SEEK_END);
-    // long file_size = ftell(file);
-    // rewind(file);
+    char *response = malloc(file_size + 1);
+    if (response == NULL) {
+        fclose(file);
+        return 1;
+    }
 
-    // char *response = malloc(file_size + 1);
-    // if (response == NULL) {
-    //     fclose(file);
-    //     return 1;
-    // }
+    size_t bytes_read = fread(response, 1, file_size, file);
+    if (bytes_read != file_size) {
+        free(response);
+        fclose(file);
+        return 1;
+    }
 
-    // size_t bytes_read = fread(response, 1, file_size, file);
-    // if (bytes_read != file_size) {
-    //     free(response);
-    //     fclose(file);
-    //     return 1;
-    // }
+    response[file_size] = '\0';
 
-    // response[file_size] = '\0';
-
-    // fclose(file);
-
-	// if (debug) {
-	// 	double response_time, parsing_time;
-
-	// 	clock_t start_time = clock();
-	// 	char *response = https_request(query);
-	// 	clock_t end_time = clock();
-
-	// 	response_time = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
-
-	// 	if (save_html)
-	// 		save_to_file(response);
-
-	// 	start_time = clock();
-	// 	parse_html(quiet, response);
-	// 	end_time = clock();
-
-	// 	parsing_time = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
-
-	// 	free(response);
-
-	// 	printf("Response Time: %f\n", response_time);
-	// 	printf("Parsing Time: %f\n", parsing_time);
-	// } else {
-	// 	char *response = https_request(query);
-
-	// 	if (save_html)
-	// 		save_to_file(response);
-
-	// 	parse_html(quiet, response);
-
-	// 	free(response);
-	// }
+    fclose(file);
+     */
 
 	char *response = NULL;
 
-	if (debug) {
+	if (SFlags.debug) {
 		double response_time, parsing_time;
 		struct timespec start_time, end_time;
 
@@ -230,25 +243,24 @@ main(int argc, char *argv[])
 		response_time = (double)(end_time.tv_sec - start_time.tv_sec)
 					  + (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
 
-		if (save_html)
+		if (SFlags.save_html)
 			save_to_file(response);
 
 		clock_gettime(CLOCK_REALTIME, &start_time);
-		parse_html(debug, all, quiet, response);
+		parse_html(SFlags, response);
 		clock_gettime(CLOCK_REALTIME, &end_time);
 
-		parsing_time = (double)(end_time.tv_sec - start_time.tv_sec)
-					 + (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+		parsing_time = (double)(end_time.tv_sec - start_time.tv_sec) + (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
 
 		printf("Response Time: %f\n", response_time);
 		printf("Parsing Time: %f\n", parsing_time);
 	} else {
 		response = https_request(query);
 
-		if (save_html)
+		if (SFlags.save_html)
 			save_to_file(response);
 
-		parse_html(debug, all, quiet, response);
+		parse_html(SFlags, response);
 	}
 
 	free(response);

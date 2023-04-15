@@ -9,24 +9,25 @@ extern "C" {
 
 char *set_url(const char*, const char*);
 char *https_request(const char*);
-static unsigned int memory_callback(void*, unsigned int, unsigned int, void*);
+unsigned int memory_callback(void*, unsigned int, unsigned int, void*);
 
 struct Response {
 	char *data;
 	unsigned int size;
 };
 
+struct Flags {
+	bool raw, quiet, all, debug, save_html, plus_urls;
+};
+
+/*
 bool raw = false;
 bool quiet = false;
 bool all = false;
-bool best_match = false;
-bool pick_search = false;
-bool pick_lang = false;
 bool debug = false;
 bool save_html = false;
-bool use_cache = false;
-bool no_pipe = false;
 bool plus_urls = false;
+ */
 
 #ifdef __cplusplus
 };
