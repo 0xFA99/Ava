@@ -108,17 +108,25 @@ save_to_file(const char *response)
 }
 
 void
-print_result(const char *result)
+print_result(bool raw, const char *result)
 {
-    printf(GREEN "---\n" RESET);
-    printf("%s\n", result);
-    printf(GREEN "---\n" RESET);
+    if (raw) {
+        printf("%s\n", result);
+    } else {
+        puts(GREEN "-----" RESET);
+        printf("%s\n", result);
+        puts(GREEN "-----" RESET);
+    }
 }
 
 void
-print_no_result(void)
+print_no_result(bool raw)
 {
-	printf(GREEN "---\n" RESET);
-    printf("No result!\n");
-	printf(GREEN "---\n" RESET);
+    if (raw) {
+        puts("No Result!");
+    } else {
+        puts(GREEN "-----" RESET);
+        puts("No Result!");
+        puts(GREEN "-----" RESET);
+    }
 }

@@ -98,69 +98,18 @@ int
 main(int argc, char *argv[])
 {
 	int opt;
-    char *query = NULL;
-
-	/*
-    while ((c = getopt(argc, argv, "rvhqabtldscpu:")) != -1) {
-        switch (c) {
-            case 'r':
-                raw = true;
-                break;
-            case 'v':
-                die("ava Version %s\n", VERSION);
-				return 1;
-            case 'h':
-				die(GREEN "Usage: " RESET "ava " YELLOW "[options] " RESET MAGENTA "\"query\"\n" RESET);
-				return 1;
-            case 'q':
-                quiet = true;
-                break;
-            case 'a':
-                all = true;
-                break;
-            case 'b':
-                best_match = true;
-                break;
-            case 't':
-                pick_search = true;
-                break;
-            case 'l':
-                pick_lang = true;
-                break;
-            case 'd':
-                debug = true;
-                break;
-            case 's':
-                save_html = true;
-                break;
-            case 'c':
-                use_cache = true;
-                break;
-            case 'p':
-                no_pipe = true;
-                break;
-            case 'u':
-                plus_urls = true;
-                break;
-            case '?':
-                fprintf(stderr, "Unrecognized option: '-%c'\n", optopt);
-				return 1;
-            default:
-                break;
-        }
-    }
-    */
+        char *query = NULL;
 
 	struct Flags SFlags = { false, false, false, false, false, false };
 	struct option long_opts[] = {
-			{"raw",     no_argument, NULL, 'r'},
-			{"version", no_argument, NULL, 'v'},
-			{"help",    no_argument, NULL, 'h'},
-			{"quiet",   no_argument, NULL, 'q'},
-			{"all",     no_argument, NULL, 'a'},
-			{"debug", no_argument, NULL, 'd' },
-			{"save", no_argument, NULL, 's' },
-			{"plus_urls", no_argument, NULL, 'u' }
+			{ "raw",        no_argument, NULL, 'r' },
+			{ "version",    no_argument, NULL, 'v' },
+			{ "help",       no_argument, NULL, 'h' },
+			{ "quiet",      no_argument, NULL, 'q' },
+			{ "all",        no_argument, NULL, 'a' },
+			{ "debug",      no_argument, NULL, 'd' },
+			{ "save",       no_argument, NULL, 's' },
+			{ "plus_urls",  no_argument, NULL, 'u' }
 	};
 
 	while ((opt = getopt_long(argc, argv, "rvhqadsu", long_opts, NULL)) != -1) {
@@ -197,10 +146,10 @@ main(int argc, char *argv[])
 		}
 	}
 
-    if (query == NULL) {
-	    die(GREEN "Usage: " RESET "ava " YELLOW "[options] " RESET MAGENTA "\"query\"\n" RESET);
-		return 1;
-    }
+        if (query == NULL) {
+                die(GREEN "Usage: " RESET "ava " YELLOW "[options] " RESET MAGENTA "\"query\"\n" RESET);
+                    return 1;
+        }
 
     /*
      * OFFLINE
@@ -233,34 +182,34 @@ main(int argc, char *argv[])
 	char *response = NULL;
 
 	if (SFlags.debug) {
-		double response_time, parsing_time;
-		struct timespec start_time, end_time;
+            double response_time, parsing_time;
+            struct timespec start_time, end_time;
 
-		clock_gettime(CLOCK_REALTIME, &start_time);
-		response = https_request(query);
-		clock_gettime(CLOCK_REALTIME, &end_time);
+            clock_gettime(CLOCK_REALTIME, &start_time);
+            response = https_request(query);
+            clock_gettime(CLOCK_REALTIME, &end_time);
 
-		response_time = (double)(end_time.tv_sec - start_time.tv_sec)
-					  + (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+            response_time = (double)(end_time.tv_sec - start_time.tv_sec) +
+                            (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
 
-		if (SFlags.save_html)
-			save_to_file(response);
+            if (SFlags.save_html)
+                    save_to_file(response);
 
-		clock_gettime(CLOCK_REALTIME, &start_time);
-		parse_html(SFlags, response);
-		clock_gettime(CLOCK_REALTIME, &end_time);
+            clock_gettime(CLOCK_REALTIME, &start_time);
+            parse_html(SFlags, response);
+            clock_gettime(CLOCK_REALTIME, &end_time);
 
-		parsing_time = (double)(end_time.tv_sec - start_time.tv_sec) + (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+            parsing_time = (double)(end_time.tv_sec - start_time.tv_sec) + (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
 
-		printf("Response Time: %f\n", response_time);
-		printf("Parsing Time: %f\n", parsing_time);
+            printf("Response Time: %f\n", response_time);
+            printf("Parsing Time: %f\n", parsing_time);
 	} else {
-		response = https_request(query);
+            response = https_request(query);
 
-		if (SFlags.save_html)
-			save_to_file(response);
+            if (SFlags.save_html)
+                    save_to_file(response);
 
-		parse_html(SFlags, response);
+            parse_html(SFlags, response);
 	}
 
 	free(response);

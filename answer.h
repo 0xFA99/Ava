@@ -40,7 +40,7 @@ void search_feat(const xmlXPathContextPtr*, const char*);
 void search_lists(const xmlXPathContextPtr*, const char*);
 void search_top_links(const xmlXPathContextPtr*, const char*);
 
-void parse_html(const struct Flags, const char*);
+void parse_html(struct Flags, const char*);
 void add_answer(const char*);
 
 #ifdef __cplusplus

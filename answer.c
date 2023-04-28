@@ -1,7 +1,6 @@
 #include "answer.h"
 
 #include <libxml/HTMLparser.h>
-#include <libxml/xmlstring.h>
 #include <string.h>
 
 #include "utils.h"
@@ -36,7 +35,7 @@ helper_single_answer(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 	xmlNodePtr node = nodes->nodeTab[0];
 	xmlChar *content = xmlNodeGetContent(node);
 
-	print_result((const char *) content);
+	print_result(current_flag.raw, (const char *) content);
 
 	xmlFree(content);
 	xmlXPathFreeObject(xpathObj);
@@ -57,7 +56,9 @@ helper_multi_answer(bool use_number, const xmlXPathContextPtr *xpathCtx, const c
 
 	if (!found_answer) found_answer = true;
 
-	puts(GREEN "-----" RESET);
+    if (!current_flag.raw) {
+        puts(GREEN "-----" RESET);
+    }
 
 	for (int i = 0; i < nodes->nodeNr; i++) {
 		xmlNodePtr node = nodes->nodeTab[i];
@@ -72,7 +73,9 @@ helper_multi_answer(bool use_number, const xmlXPathContextPtr *xpathCtx, const c
 		xmlFree(content);
 	}
 
-	puts(GREEN "-----" RESET);
+    if (!current_flag.raw) {
+        puts(GREEN "-----" RESET);
+    }
 
 	xmlXPathFreeObject(xpathObj);
 
@@ -200,7 +203,9 @@ search_weather(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 
 	if (!found_answer) found_answer = true;
 
-	printf(GREEN "---\n" RESET);
+    if (!current_flag.raw) {
+        puts(GREEN "-----" RESET);
+    }
 
 	xmlNodePtr node = nodes->nodeTab[0];
 	xmlChar *content = xmlNodeGetContent(node);
@@ -216,7 +221,9 @@ search_weather(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 		printf("%s\n", content);
 	}
 
-	printf(GREEN "---\n" RESET);
+    if (!current_flag.raw) {
+        puts(GREEN "-----" RESET);
+    }
 
 	xmlFree(content);
 	xmlXPathFreeObject(xpathObj);
@@ -325,7 +332,7 @@ search_top_links(const xmlXPathContextPtr *xpathCtx, const char *xpath)
 	xmlChar *content = xmlNodeGetContent(node);
 	xmlChar *content2 = xmlNodeGetContent(node2);
 
-	puts("Sorry about that! Perhaps one of these links may be of use?\n");
+	puts("Sorry about that! Perhaps one of these links may be of use?");
 
 	for (int i = 0; i < nodes->nodeNr; i++) {
 		node = nodes->nodeTab[i];
@@ -400,7 +407,7 @@ parse_html(struct Flags p_flag, const char *response)
 	}
 
 	if (!found_answer) {
-		print_no_result();
+		print_no_result(current_flag.raw);
 		if (current_flag.plus_urls) {
 			search_top_links(&xpathCtx, "//div[@class='yuRUbf']/a/h3");
 		}

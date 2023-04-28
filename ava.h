@@ -20,15 +20,6 @@ struct Flags {
 	bool raw, quiet, all, debug, save_html, plus_urls;
 };
 
-/*
-bool raw = false;
-bool quiet = false;
-bool all = false;
-bool debug = false;
-bool save_html = false;
-bool plus_urls = false;
- */
-
 #ifdef __cplusplus
 };
 #endif
