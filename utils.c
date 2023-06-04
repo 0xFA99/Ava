@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <time.h>
 #include <iconv.h>
+#include <unistd.h>
 
 #include <sys/stat.h>
 
@@ -33,22 +34,49 @@ die(const char *fmt, ...)
 char*
 get_cache_dir(void)
 {
-    char *cache_dir = getenv("XDG_CACHE_HOME");
-    if (!cache_dir || !cache_dir[0]) {
-        char *home_dir = getenv("HOME");
-        if (!home_dir || !home_dir[0])
-            die("Cant access home directory!\n");
+	char* cache_dir = getenv("XDG_CACHE_HOME");
+	if (!cache_dir || !cache_dir[0]) {
+		char* home_dir = getenv("HOME");
+		if (!home_dir || !home_dir[0]) {
+			fprintf(stderr, "Can't access home directory!\n");
+			return NULL;
+		}
 
-        unsigned int len = strlen(home_dir) + strlen("/.cache/") + strlen("ava") + 1;
-        cache_dir = malloc(len);
-        snprintf((char *) cache_dir, len, "%s/.cache/%s", home_dir, "ava");
-    }
+		size_t len = strnlen(home_dir, PATH_MAX) + strlen("/.cache/") + strlen("ava") + 1;
+		cache_dir = malloc(len);
+		if (!cache_dir) {
+			fprintf(stderr, "Memory allocation failed!\n");
+			return NULL;
+		}
 
-    int ret = mkdir(cache_dir, 0755);
-    if (ret != 0 && errno != EEXIST)
-        perror("mkdir");
+		snprintf(cache_dir, len, "%s/.cache/%s", home_dir, "ava");
+	}
 
-    return cache_dir;
+	struct stat st;
+	if (stat(cache_dir, &st) == 0) {
+		if (!S_ISDIR(st.st_mode)) {
+			fprintf(stderr, "Cache path is not a directory!\n");
+			free(cache_dir);
+			return NULL;
+		}
+		if (access(cache_dir, W_OK) != 0) {
+			fprintf(stderr, "No write permissions in the cache directory!\n");
+			free(cache_dir);
+			return NULL;
+		}
+	} else if (errno != ENOENT) {
+		perror("Error accessing cache directory");
+		free(cache_dir);
+		return NULL;
+	} else {
+		if (mkdir(cache_dir, 0755) != 0 && errno != EEXIST) {
+			perror("Error creating cache directory");
+			free(cache_dir);
+			return NULL;
+		}
+	}
+
+	return cache_dir;
 }
 
 char*
