@@ -64,34 +64,32 @@ set_url(const char *lang, const char *text)
 char*
 https_request(const char *query)
 {
-    char *url = set_url("en_US", query);
-    char *dump_response = NULL;
+	char *url = set_url("en_US", query);
+	CURL *curl;
+	CURLcode res;
+	struct Response response;
 
-    CURL *curl;
-    CURLcode res;
-    struct Response response;
+	response.data = malloc(1024 * 1024);
+	response.size = 0;
 
-    response.data = malloc(1);
-    response.size = 0;
+	curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_USERAGENT, user_agent);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, memory_callback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-    curl = curl_easy_init();
-    if (curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, url);
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, user_agent);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, memory_callback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+		res = curl_easy_perform(curl);
 
-        if ((res = curl_easy_perform(curl)) != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform, failed: %s\n", curl_easy_strerror(res));
+		if (res != CURLE_OK) {
+			fprintf(stderr, "curl_easy_perform, failed: %s\n", curl_easy_strerror(res));
+			return NULL;
+		}
 
-        dump_response = strdup(response.data);
+		return response.data;
+	}
 
-        curl_easy_cleanup(curl);
-        free(response.data);
-        free(url);
-    }
-
-    return dump_response;
+	return NULL;
 }
 
 int
