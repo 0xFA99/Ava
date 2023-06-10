@@ -18,9 +18,9 @@ static const char *answer_list[] = {
 		// math
 		"//span[@jsname='VssY5c']",
 		// unit
-		"//div[@class='IZ6rdc']",
+		"//div[@id='NotFQb']/input/@value",
 		// currency
-		"//input[@jsname='NotFQb']",
+		"//span[@class='DFlfde SwHCTb']/text()",
 		// holiday
 		"//div[@class='c7r50']",
 		// basic
@@ -36,5 +36,5 @@ static const char *answer_list[] = {
 		// datetime
 		"//div[@class='vk_bk dDoNo FzvWSb']",
 		// know_right
-		"//div[@jsname='g7W7Ed']/span"
+		"//div[@class='kno-rdesc']/span"
 };
