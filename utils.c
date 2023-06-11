@@ -158,3 +158,9 @@ print_no_result(bool raw)
         puts(GREEN "-----" RESET);
     }
 }
+
+void
+get_current_time(struct timespec *time)
+{
+	clock_gettime(CLOCK_REALTIME, time);
+}

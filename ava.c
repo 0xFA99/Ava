@@ -180,27 +180,28 @@ main(int argc, char *argv[])
 	char *response = NULL;
 
 	if (SFlags.debug) {
-            double response_time, parsing_time;
-            struct timespec start_time, end_time;
+		struct timespec start_time, end_time;
+		double response_time, parsing_time;
 
-            clock_gettime(CLOCK_REALTIME, &start_time);
-            response = https_request(query);
-            clock_gettime(CLOCK_REALTIME, &end_time);
+		get_current_time(&start_time);
+		response = https_request(query);
+		get_current_time(&end_time);
 
-            response_time = (double)(end_time.tv_sec - start_time.tv_sec) +
-                            (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+		response_time = (double)(end_time.tv_sec - start_time.tv_sec) +
+						(double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
 
-            if (SFlags.save_html)
-                    save_to_file(response);
+		if (SFlags.save_html)
+			save_to_file(response);
 
-            clock_gettime(CLOCK_REALTIME, &start_time);
-            parse_html(SFlags, response);
-            clock_gettime(CLOCK_REALTIME, &end_time);
+		get_current_time(&start_time);
+		parse_html(SFlags, response);
+		get_current_time(&end_time);
 
-            parsing_time = (double)(end_time.tv_sec - start_time.tv_sec) + (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+		parsing_time = (double)(end_time.tv_sec - start_time.tv_sec) +
+					   (double)(end_time.tv_nsec - start_time.tv_nsec) / 1e9;
 
-            printf("Response Time: %f\n", response_time);
-            printf("Parsing Time: %f\n", parsing_time);
+		printf("Response Time: %.3fs\n", response_time);
+		printf("Parsing Time: %.3fs\n", parsing_time);
 	} else {
             response = https_request(query);
 
