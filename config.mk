@@ -1,5 +1,5 @@
 # Ava version
-VERSION = 1.0
+VERSION = 1.0.0
 
 # Customize below to fit your system
 

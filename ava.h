@@ -7,16 +7,16 @@ extern "C" {
 
 #include <stdbool.h>
 
-char *set_url(const char*, const char*);
-char *https_request(const char*);
-unsigned int memory_callback(void*, unsigned int, unsigned int, void*);
+char *createURL(const char*, const char*);
+char *sendHttpsRequest(const char*);
+unsigned int handleMemoryCallback(void*, size_t, size_t, void*);
 
-struct Response {
-	char *data;
-	unsigned int size;
+struct HttpResponse {
+	char *responseData;
+	unsigned int responseSize;
 };
 
-struct Flags {
+struct SearchFlags {
 	bool raw, quiet, all, debug, save_html, plus_urls;
 };
 

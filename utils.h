@@ -6,14 +6,22 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
+#include <libxml/HTMLparser.h>
 
-void die(const char *fmt, ...);
-void save_to_file(const char *response);
-char* get_cache_dir();
-char *iso_8859_1_to_utf8(const char*);
-void print_result(bool, const char*);
-void print_no_result(bool);
-void get_current_time(struct timespec*);
+char *getCacheDirectory(void);
+char *convertLatin1ToUtf8(const char*);
+
+void exitWithError(const char *fmt, ...);
+void saveResponseToFile(const char*);
+void getCurrentTime(struct timespec*);
+
+void printSingleResult(bool, const char*);
+void printResultList(bool, bool, int, xmlChar**);
+void printMultiList(bool, bool, bool, int, xmlChar**, xmlChar**);
+void printNoResult(bool);
+
+void freeXmlCharList(xmlChar**);
+void freeXmlChar(xmlChar*);
 
 #ifdef __cplusplus
 };

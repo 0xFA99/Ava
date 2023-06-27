@@ -2,8 +2,9 @@
 .SH NAME
 ava \- assitance virtual answer
 .SH SYNOPSIS
-.B ava
-.RB [ \-v ]
+.DS
+\fB ava [OPTIONS]...\ [QUERY]...\fP
+\fB ava [QUERY]...\ [OPTIONS]...\fP
 .SH DESCRIPTION
 Ava is an innovative virtual assistant designed to help you find information
 online quickly and easily. With its intuitive interface and powerful search
@@ -37,60 +38,31 @@ enjoying the benefits of this amazing virtual assistant!
 .SH OPTIONS
 .SS Global
 .TP
-.B \-h
+.B \-h, --help
 Show this help message and exit.
 .TP
-.B \-v
+.B \-v, --version
 Print ava version info and exit.
 .TP
-.B \-r
+.B \-r, --raw
 Raw search results. (no pretty output, no colors)
 .TP
-.B \-q
+.B \-q, --quiet
 Only output search results. (silences "Did you mena?", greeting, usage)
 .TP
-.B \-a
+.B \-a, --all
 Print all valid answers.
 .TP
-.B \-u
+.B \-u, --plus_urls
 Prints out the top handful or URLs for your search query. (this is automatically
 printed out if ava can't find you an answer)
-.TP
-.B \-b
-Tries to select the best answer based on keywords at the start and end of your
-query. (experimental - eg: define WORD, SONG lyrics, PERSON quotes, weather
-CITY, FILM cast)
-.TP
-.B \-t
-Pick answer to test. (you can specify multiple answers using ava_NAME in your
-query
-.TP
-.B \-l
-use LANG_[lang] in your query to override the language used. (eg: ava -l
-LANG_en_US my search query)
-.SS Variables Support
-.TP
-.B AVA_LANG=[lang]
-sets default search language (eg: AVA_LANG='en_US')
-.TP
-.B AVA_DELAY=[int]
-if you find moer than one answer is being printed (and you're not using -a),
-increase this number by a little (you want it to be as low as possible), default
-value is 250 (eg: AVA_DELAY=270)
 .SS Developer Flags
 .TP
-.B \-d
+.B \-d, --debug
 Prints debug info along with results
 .TP
-.B \-s
+.B \-s, --save
 saves HTML for this query to $XDG_CACHE_HOME/ava/ava-[date].html
-.TP
-.B \-c
-use most recent cached result and query, this can be combined with -t flag to
-more quickly test for different answer
-.TP
-.B \-p
-disable pipe support (it can break some scripts including our own test script)
 .SH USAGE
 Ava is designed to be easy to use and intuitive. To use Ava, simply run the
 `ava` command followed by the options flags you want to perform and any relevant
@@ -101,36 +73,9 @@ query parameters. For example:
 This command will search for the solution to the math equation "2+2" and display
 the result in the terminal.
 .SH ISSUES
-Like any software tool, Ava may encounter occasional issues or bugs that could
-affect its performance. While the development team hard to ensure that Ava is
-stable and reliable, there are a few potential issues that users should be aware
-of. These include search errors, slow response times, and compatibility issues
-with certain devices or operations systems.
+In using Ava, there are several issues that may arise. One common issue is the need to execute JavaScript correctly, ensuring that there are no syntax errors or function call issues. Regular maintenance is also essential, including bug fixes, security updates, and functional improvements. To address the problem of unappealing and messy output, you can use appropriate CSS styles to organize the display of HTML elements and consider using front-end frameworks that provide ready-made components and styles. Additionally, it is crucial to establish a well-organized project structure by separating files based on their functions and responsibilities and providing descriptive file and directory names.
 .P
-One common issue that users may encounter is search errors. These can occur when
-Ava is unable to find the information that the user is looking for, either due
-to incomplete or inaccurate search terms, or because the information is not
-available online. While Ava is designed to provide accurate and relevant search
-results, it may not always be able to find the exact information that the user
-needs.
-.P
-Another potential issue is slow response times. This can happen when Ava is
-processing a large amount of data, or when the user's internet connection is
-slow or unstable. While the development team is constantly working to optimize
-Ava's performance and improve response times, users may experience occasional
-delays or lag when using the tool.
-.P
-Finally, some users may encouter compatibility issues with certain devices or
-oprating systems. While Ava is designed to work on a wide range of devices and
-platforms, there may be some instances where it is not fully compatible with the
-user's system. In such cases, users may need to contact the development team for
-support or seek alternative solutions.
-.P
-Overall, while there are some potential issues that users may encounter when
-using Ava, the development team is committed to addressing these and providing
-the best possible user experience. if you encounter any issues or have any
-questions or concerns about Ava, be sure to contact the support team for
-assistance.
+Furthermore, there are several other issues that may occur, such as the need to optimize code. It is important to identify slow or inefficient sections of code in your project and make necessary improvements, such as fixing inefficient algorithms or excessive resource usage. Employing optimization techniques like caching, code merging and compression, lazy loading, or asynchronous programming can also be beneficial. Lastly, addressing the problem of poorly named variables is crucial. By providing clear and descriptive names for variables and following consistent naming conventions, you can enhance code readability. Additionally, adding clear comments can help explain the usage of complex variables.
 .SH BUGS
-Send all bug report to fajar.nur.h@pm.me
+Send all bug report to fajar.nur.h@pm.me or https://github.com/0xFA99/Ava/issues
 

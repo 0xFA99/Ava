@@ -13,7 +13,7 @@
 #include "answer.h"
 
 void
-die(const char *fmt, ...)
+exitWithError(const char *fmt, ...)
 {
     va_list ap;
 
@@ -32,7 +32,7 @@ die(const char *fmt, ...)
 }
 
 char*
-get_cache_dir(void)
+getCacheDirectory(void)
 {
 	char* cache_dir = getenv("XDG_CACHE_HOME");
 	if (!cache_dir || !cache_dir[0]) {
@@ -80,7 +80,7 @@ get_cache_dir(void)
 }
 
 char*
-iso8859_1_to_utf8(const char *iso8859_1_str)
+convertLatin1ToUtf8(const char *iso8859_1_str)
 {
     size_t iso8859_1_len = strlen(iso8859_1_str);
     size_t utf8_len = iso8859_1_len * 4;
@@ -108,7 +108,7 @@ iso8859_1_to_utf8(const char *iso8859_1_str)
 }
 
 void
-save_to_file(const char *response)
+saveResponseToFile(const char *response)
 {
     time_t rawtime;
     struct tm *timeinfo;
@@ -119,7 +119,7 @@ save_to_file(const char *response)
     strftime(buffer, 80, "%d-%T_ava", timeinfo);
 
     char filename[100];
-    char *cache_dir = get_cache_dir();
+    char *cache_dir = getCacheDirectory();
     snprintf(filename, 100, "%s/%s.html", cache_dir, buffer);
 
     free(cache_dir);
@@ -136,7 +136,7 @@ save_to_file(const char *response)
 }
 
 void
-print_result(bool raw, const char *result)
+printSingleResult(bool raw, const char *result)
 {
     if (raw) {
         printf("%s\n", result);
@@ -148,7 +148,63 @@ print_result(bool raw, const char *result)
 }
 
 void
-print_no_result(bool raw)
+printResultList(bool number, bool raw, int limit, xmlChar **content)
+{
+	int size = 0;
+
+	if (limit == 0) {
+		while (content[size] != NULL) {
+			size++;
+		}
+	} else {
+		size = limit;
+	}
+
+	if (raw) { printf(GREEN "-----" RESET); }
+
+	for (int i = 0; i < size; i++) {
+		if (number) {
+			printf("%d. %s\n", i + 1, (const char *) content[i]);
+		} else {
+			printf("%s\n", (const char *) content[i]);
+		}
+	}
+
+	if (raw) { printf(GREEN "-----" RESET); }
+}
+
+void
+printMultiList(bool number, bool raw, bool horizontal, int limit, xmlChar **content, xmlChar **content2)
+{
+	int size = limit;
+
+	if (limit == 0) {
+		while (content[size] != NULL) size++;
+	}
+
+	if (raw) { printf(GREEN "-----" RESET); }
+
+	for (int i = 0; i < size; i++) {
+		if (number) {
+			if (horizontal) {
+				printf("%d. %s: %s\n", i + 1, (const char *) content[i], (const char *) content2[i]);
+			} else {
+				printf("%d. %s\n    %s\n", i + 1, (const char *) content[i], (const char *) content2[i]);
+			}
+		} else {
+			if (horizontal) {
+				printf("%s: %s\n", (const char *) content[i], (const char *) content2[i]);
+			} else {
+				printf("%s\n    %s\n", (const char *) content[i], (const char *) content2[i]);
+			}
+		}
+	}
+
+	if (raw) { printf(GREEN "-----" RESET); }
+}
+
+void
+printNoResult(bool raw)
 {
     if (raw) {
         puts("No Result!");
@@ -160,7 +216,25 @@ print_no_result(bool raw)
 }
 
 void
-get_current_time(struct timespec *time)
+getCurrentTime(struct timespec *time)
 {
 	clock_gettime(CLOCK_REALTIME, time);
+}
+
+void
+freeXmlCharList(xmlChar **contentList)
+{
+	int size = 0;
+	while (contentList[size] != NULL) {
+		xmlFree(contentList[size]);
+		size++;
+	}
+
+	free(contentList);
+}
+
+void
+freeXmlChar(xmlChar *content)
+{
+	xmlFree(content);
 }

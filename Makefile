@@ -20,10 +20,10 @@ config.h:
 	cp config.def.h $@
 
 ava: ${OBJ}
-	${CC} -o $@ ${OBJ} ${LDFLAGS}
+	${CC} -o $@ ${OBJ} ${LDFLAGS}; \
 
 clean:
-	rm -rf ava ${OBJ} ava-${VERSION}.tar.gz
+	rm -rf ava ${OBJ} ava-${VERSION}.tar.gz config.h
 
 dist: clean
 	mkdir -p ava-${VERSION}

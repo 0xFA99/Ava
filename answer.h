@@ -18,30 +18,31 @@ extern "C" {
 #define MAGENTA "\033[1;35m"
 #define CYAN    "\033[1;36m"
 
-bool helper_single_answer(const xmlXPathContextPtr*, const char*);
-bool helper_multi_answer(bool, const xmlXPathContextPtr*, const char*);
+xmlChar *getSingleAnswer(const char*);
+xmlChar **getMultiAnswer(const char*);
 
-void search_richcast(const xmlXPathContextPtr*, const char*);
-void search_math(const xmlXPathContextPtr*, const char*);
-void search_lyrics(const xmlXPathContextPtr*, const char*);
-void search_translate(const xmlXPathContextPtr*, const char*);
-void search_currency(const xmlXPathContextPtr*, const char*);
-void search_quote(const xmlXPathContextPtr*, const char*);
-void search_unit(const xmlXPathContextPtr*, const char*);
-void search_holiday(const xmlXPathContextPtr*, const char*);
-void search_define(const xmlXPathContextPtr*, const char*);
-void search_tracklist(const xmlXPathContextPtr*, const char*);
-void search_know_right(const xmlXPathContextPtr*, const char*);
-void search_weather(const xmlXPathContextPtr*, const char*);
-void search_datetime(const xmlXPathContextPtr*, const char*);
-void search_pronounce(const xmlXPathContextPtr*, const char*);
-void search_basic(const xmlXPathContextPtr*, const char*);
-void search_feat(const xmlXPathContextPtr*, const char*);
-void search_lists(const xmlXPathContextPtr*, const char*);
-void search_top_links(const xmlXPathContextPtr*, const char*);
+void searchBasicInfo(const char*);
+void searchCryptocurrencyInfo(const char*);
+void searchCurrencyInfo(const char*);
+void searchDateTimeInfo(const char*);
+void searchDefinition(const char*);
+void searchFeatures(const char*);
+void searchKnowledgeRights(const char*);
+void searchLists(const char*);
+void searchHoliday(const char*);
+void searchLyrics(const char*);
+void searchMathematic(const char*);
+void searchPronunciation(const char*);
+void searchQuote(const char*);
+void searchRichCast(const char*);
+void searchTopLinks(const char*);
+void searchTracklist(const char*);
+void searchTranslation(const char*);
+void searchUnitConversion(const char*);
+void searchWeatherInfo(const char*);
+// void search_know_top(const xmlXPathContextPtr*, const char*);
 
-void parse_html(struct Flags, const char*);
-void add_answer(const char*);
+void parseHTML(struct SearchFlags, const char*);
 
 #ifdef __cplusplus
 };
