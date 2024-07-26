@@ -6,7 +6,7 @@
 #include <libxml/HTMLparser.h>
 #include <libxml/xpathInternals.h>
 
-static struct ParsingType parsingType = {
+static struct ParsingType parsingType[] = {
     { "Richcast",       "//div[@class='JjtOHd']"             },
     { "Math",           "//span[@jsname='VssY5c']"           },
     { "Lyric",          "//span[@jsname='YS01Ge']"           },
@@ -26,39 +26,19 @@ static struct ParsingType parsingType = {
     { "Lists",          "//li[@class='TrT0Xe']"              },
 };
 
-static htmlDocPtr *doc = NULL;
-static xmlXPathContextPtr *xpathCtx = NULL;
+static htmlDocPtr doc;
+static xmlXPathContextPtr xpathCtx;
 
-static void
-query_correction(void)
+static xmlChar*
+search_single_answer(const char *type, const char *xpath)
 {
-    xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression((xmlChar *) "//a[@class='gL9Hy']/b", xpathCtx);
+    xmlChar *result = NULL;
+
+    xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression((xmlChar *)xpath, xpathCtx);
     xmlNodeSetPtr nodes = xpathObj->nodesetval;
 
     if (nodes != NULL) {
         xmlNodePtr node = nodes->nodeTab[0];
-        xmlChar *content = xmlNodeGetContent(node);
-
-        printf(">> Did you mean: " BOLD "%s\n" RESET, content);
-
-        xmlFree(content);
-    }
-
-    xmlXPathFreeObject(xpathObj);
-}
-
-static char*
-search_single_answer(const char *type, const char *path)
-{
-    xmlChar *result = NULL;
-
-    xmlXPathContextPtr xpathObj = xmlXPathEvalExpression((xmlChar *)xpath, xpathCtx);
-    xmlNodeSetPtr nodes = xpathObj->nodesetval;
-
-    if (nodes != NULL) {
-        xmlNodePtr node = noes->nodeTab[0];
-        xmlChar *content = xmlNodeGetContent(node);
-
         result = xmlNodeGetContent(node);
     }
 
@@ -85,9 +65,7 @@ ava_parsing_init(struct Ava *ava)
 int
 ava_parsing_run()
 {
-    if (!ava->flag->quiet) query_correction();
-
-
+    // TODO: Something
 }
 
 void

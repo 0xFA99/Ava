@@ -1,49 +1,26 @@
-include config.mk
+CC = gcc
+CFLAGS = -Wall -Wextra -I/usr/include/libxml2
+LDFLAGS = -lcurl -lxml2
 
-SRC = answer.c ava.c utils.c
-OBJ = ${SRC:.c=.o}
+SRCDIR = src
+OBJDIR = obj
+BINDIR = bin
 
-all: options ava
+SOURCES = $(wildcard $(SRCDIR)/*.c)
+OBJECTS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SOURCES))
+TARGET = $(BINDIR)/ava
 
-options:
-	@echo ava build options:
-	@echo "CFLAGS	= ${CFLAGS}"
-	@echo "LDFLAGS	= ${LDFLAGS}"
-	@echo "CC	= ${CC}"
+all: $(TARGET)
 
-.c.o:
-	${CC} -c ${CFLAGS} $<
+$(TARGET): $(OBJECTS)
+	@mkdir -p $(BINDIR)
+	$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
 
-${OBJ}: config.h config.mk
-
-config.h:
-	cp config.def.h $@
-
-ava: ${OBJ}
-	${CC} -o $@ ${OBJ} ${LDFLAGS}; \
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	@mkdir -p $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf ava ${OBJ} ava-${VERSION}.tar.gz config.h
+	$(RM) -r $(OBJDIR) $(BINDIR)
 
-dist: clean
-	mkdir -p ava-${VERSION}
-	cp -R LICENSE Makefile README config.def.h config.mk\
-		ava.1 answer.h utils.h ${SRC} ava-${VERSION}
-	tar -cf ava-${VERSION}.tar ava-${VERSION}
-	${CC} -o $@ ${OBJ} ${TEST_OBJ} ${LDFLAGS} ${LIBS}
-	gzip ava-${VERSION}.tar
-	rm -rf ava-${VERSION}
-
-install: all
-	mkdir -p ${DESTDIR}${PREFIX}/bin
-	cp -f ava ${DESTDIR}${PREFIX}/bin
-	chmod 755 ${DESTDIR}${PREFIX}/bin/ava
-	mkdir -p ${DESTDIR}${MANPREFIX}/man1
-	sed "s/VERSION/${VERSION}/g" < ava.1 > ${DESTDIR}${MANPREFIX}/man1/ava.1
-	chmod 644 ${DESTDIR}${MANPREFIX}/man1/ava.1
-
-uninstall:
-	rm -f ${DESTDIR}${PREFIX}/bin/ava\
-		${DESTDIR}${MANPREFIX}/man1/ava.1
-
-.PHONY: all options clean dist install uninstall
+.PHONY: all clean

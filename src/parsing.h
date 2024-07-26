@@ -5,8 +5,8 @@
 #include "ava.h"
 
 struct ParsingType {
-    char type[20];
-    char xpath[50];
+    char *type;
+    char *xpath;
 };
 
 int ava_parsing_init(struct Ava *ava);
