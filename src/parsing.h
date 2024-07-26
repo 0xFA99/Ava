@@ -4,8 +4,29 @@
 
 #include "ava.h"
 
-struct ParsingType {
-    char *type;
+enum parsingType {
+    YOU_MEAN = 0,
+    RICHCAST,
+    MATH,
+    LYRIC,
+    TRANSLATE,
+    CURRENCY,
+    QUOTE,
+    UNIT,
+    HOLIDAY,
+    DEFINE,
+    TRACKLIST,
+    KNOW_RIGHT,
+    WEATHER,
+    DATETIME,
+    PRONOUNCE,
+    BASIC
+    FEAT,
+    LISTS
+};
+
+struct Parsing {
+    enum parsingType type;
     char *xpath;
 };
 

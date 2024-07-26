@@ -6,24 +6,25 @@
 #include <libxml/HTMLparser.h>
 #include <libxml/xpathInternals.h>
 
-static struct ParsingType parsingType[] = {
-    { "Richcast",       "//div[@class='JjtOHd']"             },
-    { "Math",           "//span[@jsname='VssY5c']"           },
-    { "Lyric",          "//span[@jsname='YS01Ge']"           },
-    { "Translate",      "//pre[@id='tw-target-text']"        },
-    { "Currency",       "//input[@jsname='NotFQb']"          },
-    { "Quote",          "//div[@class='Qynugf']"             },
-    { "Unit",           "//div[@class='IZ6rdc']"             },
-    { "Holiday",        "//div[@class='c7r50']"              },
-    { "Define",         "//div[@jsname='x3Eknd']"            },
-    { "Tracklist",      "//div[@class='title']"              },
-    { "Know Right",     "//div[@jsname='g7W7Ed']/span"       },
-    { "Weather",        "//span[@id='wob_tm']"               },
-    { "Datetime",       "//div[@class='vk_bk dDoNo FzvWSb']" },
-    { "Pronounce",      "//div[@class='TQ7enb']"             },
-    { "Basic",          "//div[@class='Z0LcW t2b5Cf']"       },
-    { "Feat",           "//span[@class='hgKElc']"            },
-    { "Lists",          "//li[@class='TrT0Xe']"              },
+static struct Parsing parsingList[] = {
+    { YOU_MEAN,         "//a[@class='gL9Hy']"                },
+    { RICHCAST,         "//div[@class='JjtOHd']"             },
+    { MATH,             "//span[@jsname='VssY5c']"           },
+    { LYRIC,            "//span[@jsname='YS01Ge']"           },
+    { TRANSLATE,        "//pre[@id='tw-target-text']"        },
+    { CURRENCY,         "//input[@jsname='NotFQb']"          },
+    { QUOTE,            "//div[@class='Qynugf']"             },
+    { UNIT,             "//div[@class='IZ6rdc']"             },
+    { HOLIDAY,          "//div[@class='c7r50']"              },
+    { DEFINE,           "//div[@jsname='x3Eknd']"            },
+    { TRACKLIST,        "//div[@class='title']"              },
+    { KNOW_RIGHT,       "//div[@jsname='g7W7Ed']/span"       },
+    { WEATHER,          "//span[@id='wob_tm']"               },
+    { DATETIME,         "//div[@class='vk_bk dDoNo FzvWSb']" },
+    { PRONOUNCE,        "//div[@class='TQ7enb']"             },
+    { BASIC,            "//div[@class='Z0LcW t2b5Cf']"       },
+    { FEAT,             "//span[@class='hgKElc']"            },
+    { LISTS,            "//li[@class='TrT0Xe']"              },
 };
 
 static htmlDocPtr doc;
@@ -59,13 +60,21 @@ ava_parsing_init(struct Ava *ava)
         return -1;
     }
 
+    xpathCtx = xmlXPathNewContext(doc);
+
     return 0;
 }
 
 int
 ava_parsing_run()
 {
-    // TODO: Something
+    if (!ava->flag->quiet) {
+        xmlChar *result = search_single_answer(parsingType[0].type, parsingType[0].xpath);
+        printf("Did you mean: " BOLD "%s\n" RESET, result);
+        xmlFree(result);
+    }
+
+
 }
 
 void
