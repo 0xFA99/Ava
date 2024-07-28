@@ -2,9 +2,11 @@
 #ifndef AVA_PARSING_H
 #define AVA_PARSING_H
 
+#define PARSING_TYPE_CAP 18
+
 #include "ava.h"
 
-enum parsingType {
+enum ParsingType {
     YOU_MEAN = 0,
     RICHCAST,
     MATH,
@@ -20,18 +22,22 @@ enum parsingType {
     WEATHER,
     DATETIME,
     PRONOUNCE,
-    BASIC
+    BASIC,
     FEAT,
     LISTS
 };
 
 struct Parsing {
-    enum parsingType type;
+    enum ParsingType type;
     char *xpath;
+    char *data;
+    void (*process)(const char *xpath, char *data);
 };
 
 int ava_parsing_init(struct Ava *ava);
-int ava_parsing_run(void);
+int ava_parsing_run(struct Ava *ava);
 void ava_parsing_cleanup(void);
+
+void search_single_answer(const char *xpath, char *data);
 
 #endif

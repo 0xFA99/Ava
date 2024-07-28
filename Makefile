@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -I/usr/include/libxml2
+CFLAGS = -g -Wall -Wextra -I/usr/include/libxml2
 LDFLAGS = -lcurl -lxml2
 
 SRCDIR = src

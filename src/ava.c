@@ -55,13 +55,19 @@ ava_run(int argc, char *argv[])
     if (ava_get_flags(ava, argc, argv) == -1)
         return;
 
-    send_http_request(ava);
+    // send_http_request(ava);
+
+    ava->response->data = read_string_file("test.html");
+
+    if (ava->flag->save) {
+        if (ava_save_response() == -1) {
+            fprintf(stderr, "[ERROR] Failed to save response to file.\n");
+        }
+    }
 
     ava_parsing_init(ava);
-    ava_parsing_run();
+    ava_parsing_run(ava);
     ava_parsing_cleanup();
-
-
 }
 
 void

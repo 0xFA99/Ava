@@ -11,6 +11,41 @@
 #include "utils.h"
 
 char*
+read_string_file(const char *filename)
+{
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        fprintf(stderr, "[ERROR] Failed to open file: %s.\n", filename);
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    size_t file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    char *buffer = (char *)malloc(file_size + 1);
+    if (buffer == NULL) {
+        fprintf(stderr, "[ERROR] Failed to allocating memori to read file.\n");
+        fclose(file);
+        return NULL;
+    }
+
+    size_t bytes_read = fread(buffer, 1, file_size, file);
+    if (bytes_read != file_size) {
+        fprintf(stderr, "[ERROR] Failed reading file.\n");
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+
+    buffer[file_size] = '\0';
+
+    fclose(file);
+
+    return buffer;
+}
+
+char*
 url_encode(const char *s)
 {
     if (s == NULL) return NULL;
