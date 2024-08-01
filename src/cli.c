@@ -56,9 +56,7 @@ ava_get_flags(struct Ava *ava, int argc, char *argv[])
             return -1;
         }
 
-        strncpy(ava->query, argv[argc - 1], query_len);
-        ava->query[query_len] = '\0';
-
+        strcpy(ava->query, argv[argc - 1]);
     } else {
         fprintf(stderr, "[ERROR] No query.\n");
     }
