@@ -10,6 +10,43 @@
 
 #include "utils.h"
 
+void
+read_string_file(struct Response *resp, const char *filename)
+{
+    if (resp == NULL) return;
+
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        fprintf(stderr, "[ERROR] Failed to open file: %s\n", filename);
+        return;
+    }
+
+    fseek(file, 0, SEEK_END);
+    size_t file_size = ftell(file);
+    rewind(file);
+
+    char *response = (char *)malloc(file_size + 1);
+    if (response == NULL) {
+        fprintf(stderr, "[ERROR] Failed to allocation memory\n");
+        fclose(file);
+        return;
+    }
+
+    size_t bytes_read = fread(response, 1, file_size, file);
+    if (bytes_read != file_size) {
+        free(response);
+        fclose(file);
+        return;
+    }
+
+    response[file_size] = '\0';
+
+    resp->data = response;
+    resp->size = file_size;
+
+    fclose(file);
+}
+
 char*
 url_encode(const char *s)
 {
