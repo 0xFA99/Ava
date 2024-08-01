@@ -10,39 +10,41 @@
 
 #include "utils.h"
 
-char*
-read_string_file(const char *filename)
+void
+read_string_file(struct Response *resp, const char *filename)
 {
-    FILE *file = fopen(filename, "rb");
+    if (resp == NULL) return;
+
+    FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        fprintf(stderr, "[ERROR] Failed to open file: %s.\n", filename);
-        return NULL;
+        fprintf(stderr, "[ERROR] Failed to open file: %s\n", filename);
+        return;
     }
 
     fseek(file, 0, SEEK_END);
     size_t file_size = ftell(file);
-    fseek(file, 0, SEEK_SET);
+    rewind(file);
 
-    char *buffer = (char *)malloc(file_size + 1);
-    if (buffer == NULL) {
-        fprintf(stderr, "[ERROR] Failed to allocating memori to read file.\n");
+    char *response = (char *)malloc(file_size + 1);
+    if (response == NULL) {
+        fprintf(stderr, "[ERROR] Failed to allocation memory\n");
         fclose(file);
-        return NULL;
+        return;
     }
 
-    size_t bytes_read = fread(buffer, 1, file_size, file);
+    size_t bytes_read = fread(response, 1, file_size, file);
     if (bytes_read != file_size) {
-        fprintf(stderr, "[ERROR] Failed reading file.\n");
-        free(buffer);
+        free(response);
         fclose(file);
-        return NULL;
+        return;
     }
 
-    buffer[file_size] = '\0';
+    response[file_size] = '\0';
+
+    resp->data = response;
+    resp->size = file_size;
 
     fclose(file);
-
-    return buffer;
 }
 
 char*

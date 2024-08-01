@@ -10,69 +10,84 @@
 #include <libxml/xpathInternals.h>
 
 static struct Parsing parsingList[] = {
-    { YOU_MEAN,         "//a[@class='gL9Hy']"               , NULL, search_single_answer },
-    { RICHCAST,         "//div[@class='JjtOHd']"            , NULL, search_single_answer },
-    { MATH,             "//span[@jsname='VssY5c']"          , NULL, search_single_answer },
-    { LYRIC,            "//span[@jsname='YS01Ge']"          , NULL, search_single_answer },
-    { TRANSLATE,        "//pre[@id='tw-target-text']"       , NULL, search_single_answer },
-    { CURRENCY,         "//input[@jsname='NotFQb']"         , NULL, search_single_answer },
-    { QUOTE,            "//div[@class='Qynugf']"            , NULL, search_single_answer },
-    { UNIT,             "//div[@class='IZ6rdc']"            , NULL, search_single_answer },
-    { HOLIDAY,          "//div[@class='c7r50']"             , NULL, search_single_answer },
-    { DEFINE,           "//div[@jsname='x3Eknd']"           , NULL, search_single_answer },
-    { TRACKLIST,        "//div[@class='title']"             , NULL, search_single_answer },
-    { KNOW_RIGHT,       "//div[@jsname='g7W7Ed']/span"      , NULL, search_single_answer },
-    { WEATHER,          "//span[@id='wob_tm']"              , NULL, search_single_answer },
-    { DATETIME,         "//div[@class='vk_bk dDoNo FzvWSb']", NULL, search_single_answer },
-    { PRONOUNCE,        "//div[@class='TQ7enb']"            , NULL, search_single_answer },
-    { BASIC,            "//div[@class='Z0LcW t2b5Cf']"      , NULL, search_single_answer },
-    { FEAT,             "//span[@class='hgKElc']"           , NULL, search_single_answer },
-    { LISTS,            "//li[@class='TrT0Xe']"             , NULL, search_single_answer }
+    { YOU_MEAN,         "//a[@class='gL9Hy']"               , NULL, get_xpath_content },
+    { RICHCAST,         "//div[@class='JjtOHd']"            , NULL, get_xpath_content },
+    { MATH,             "//span[@jsname='VssY5c']"          , NULL, get_xpath_content },
+    { LYRIC,            "//span[@jsname='YS01Ge']"          , NULL, get_xpath_content },
+    { TRANSLATE,        "//pre[@id='tw-target-text']"       , NULL, get_xpath_content },
+    { CURRENCY,         "//input[@jsname='NotFQb']"         , NULL, get_xpath_content },
+    { QUOTE,            "//div[@class='Qynugf']"            , NULL, get_xpath_content },
+    { UNIT,             "//div[@class='IZ6rdc']"            , NULL, get_xpath_content },
+    { HOLIDAY,          "//div[@class='c7r50']"             , NULL, get_xpath_content },
+    { DEFINE,           "//div[@jsname='x3Eknd']"           , NULL, get_xpath_content },
+    { TRACKLIST,        "//div[@class='title']"             , NULL, get_xpath_content },
+    { KNOW_RIGHT,       "//div[@jsname='g7W7Ed']/span"      , NULL, get_xpath_content },
+    { WEATHER,          "//span[@id='wob_tm']"              , NULL, get_xpath_content },
+    { DATETIME,         "//div[@class='vk_bk dDoNo FzvWSb']", NULL, get_xpath_content },
+    { PRONOUNCE,        "//div[@class='TQ7enb']"            , NULL, get_xpath_content },
+    { BASIC,            "//div[@class='Z0LcW t2b5Cf']"      , NULL, get_xpath_content },
+    { FEAT,             "//span[@class='hgKElc']"           , NULL, get_xpath_content },
+    { LISTS,            "//li[@class='TrT0Xe']"             , NULL, get_xpath_content }
 };
 
 static htmlDocPtr doc;
 static xmlXPathContextPtr xpathCtx;
 
 void
-search_single_answer(const char *xpath, char *data)
+get_xpath_content(const char *xpath, char **data)
 {
+    *data = NULL;
+
     xmlXPathObjectPtr xpathObj = xmlXPathEvalExpression((xmlChar *)xpath, xpathCtx);
+    if (xpathObj == NULL) {
+        fprintf(stderr, "[ERROR] Failed to evaluate XPath expression.\n");
+        return;
+    }
+
     xmlNodeSetPtr nodes = xpathObj->nodesetval;
+    if (nodes == NULL || nodes->nodeNr == 0) {
+        xmlXPathFreeObject(xpathObj);
+        return;
+    }
 
-    if (nodes && nodes->nodeNr > 0) {
-        int size = 0;
-        xmlChar *temp[nodes->nodeNr];
+    int size = 0;
+    xmlChar *temp[nodes->nodeNr];
 
-        for (int i = 0; i < nodes->nodeNr; i++) {
-            temp[i] = xmlNodeGetContent(nodes->nodeTab[i]);
+    for (int i = 0; i < nodes->nodeNr; i++) {
+        temp[i] = xmlNodeGetContent(nodes->nodeTab[i]);
+        if (temp[i] != NULL) {
             size += xmlStrlen(temp[i]) + 1;
         }
+    }
 
-        data = (char *)malloc(size);
-        if (data == NULL) {
-            fprintf(stderr, "[ERROR] Failed to allocate memory.\n");
-            for (int i = 0; i < nodes->nodeNr; i++) {
+    *data = (char *)malloc(size + 1);
+    if (*data == NULL) {
+        fprintf(stderr, "[ERROR] Failed to allocate memory.\n");
+        for (int i = 0; i < nodes->nodeNr; i++) {
+            if (temp[i] != NULL) {
                 xmlFree(temp[i]);
             }
-
-            xmlXPathFreeObject(xpathObj);
-            exit(EXIT_FAILURE);
         }
 
-        int current_pos = 0;
-        for (int i = 0; i < nodes->nodeNr; i++) {
+        xmlXPathFreeObject(xpathObj);
+        exit(EXIT_FAILURE);
+    }
+
+    int current_pos = 0;
+    for (int i = 0; i < nodes->nodeNr; i++) {
+        if (temp[i] != NULL) {
             int len = xmlStrlen(temp[i]);
 
-            memcpy(data + current_pos, temp[i], len);
+            memcpy(*data + current_pos, temp[i], len);
             current_pos += len;
-            data[current_pos] = '\0';
+            (*data)[current_pos] = '\0';
 
             current_pos += 1;
             xmlFree(temp[i]);
         }
-
-        data[current_pos] = '\0';
     }
+
+    (*data)[current_pos] = '\0';
 
     xmlXPathFreeObject(xpathObj);
 }
@@ -90,12 +105,10 @@ ava_parsing_init(struct Ava *ava)
     }
 
     xpathCtx = xmlXPathNewContext(doc);
-
-    if (!ava->flag->quiet) {
-        parsingList[0].process(parsingList[0].xpath, parsingList[0].data);
-        if (parsingList[0].data != NULL) {
-            printf(">> Did you mean: %s\n", parsingList[0].data);
-        }
+    if (xpathCtx == NULL) {
+        fprintf(stderr, "[ERROR] Failed to create XPath context!\n");
+        xmlFreeDoc(doc);
+        return -1;
     }
 
     return 0;
@@ -104,13 +117,22 @@ ava_parsing_init(struct Ava *ava)
 int
 ava_parsing_run(struct Ava *ava)
 {
-    // if (!ava->flag->quiet) {
-    //     xmlChar *result = search_single_answer(parsingList[YOU_MEAN].type, parsingList[YOU_MEAN].xpath);
-    //     if (result != NULL) {
-    //         printf("Did you mean: " BOLD "%s\n" RESET, result);
-    //         xmlFree(result);
-    //     }
-    // }
+    if (ava->flag->quiet == false) {
+        parsingList[0].process(parsingList[0].xpath, &parsingList[0].data);
+        if (parsingList[0].data != NULL) {
+            printf(">> Did you mean: %s\n", parsingList[0].data);
+        }
+    }
+
+	for (int i = 1; i < PARSING_TYPE_CAP; i++) {
+		parsingList[i].process(parsingList[i].xpath, &parsingList[i].data);
+	}
+
+	for (int i = 1; i < PARSING_TYPE_CAP; i++) {
+		if (parsingList[i].data != NULL) {
+			printf("\n・ %s\n", parsingList[i].data);
+		}
+	}
 
     return 0;
 }
@@ -127,4 +149,6 @@ ava_parsing_cleanup()
             parsingList[i].data = NULL;
         }
     }
+
+    xmlFreeDoc(doc);
 }

@@ -31,13 +31,13 @@ struct Parsing {
     enum ParsingType type;
     char *xpath;
     char *data;
-    void (*process)(const char *xpath, char *data);
+    void (*process)(const char *xpath, char **data);
 };
 
 int ava_parsing_init(struct Ava *ava);
 int ava_parsing_run(struct Ava *ava);
 void ava_parsing_cleanup(void);
 
-void search_single_answer(const char *xpath, char *data);
+void get_xpath_content(const char *xpath, char **data);
 
 #endif
