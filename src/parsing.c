@@ -15,7 +15,7 @@ static struct Parsing parsingList[] = {
     { MATH,             "//span[@jsname='VssY5c']"          , NULL, get_xpath_content },
     { LYRIC,            "//span[@jsname='YS01Ge']"          , NULL, get_xpath_content },
     { TRANSLATE,        "//pre[@id='tw-target-text']"       , NULL, get_xpath_content },
-    { CURRENCY,         "//input[@jsname='NotFQb']"         , NULL, get_xpath_content },
+    { CURRENCY,         "//span[@class='DFlfde SwHCTb']"    , NULL, get_xpath_content },
     { QUOTE,            "//div[@class='Qynugf']"            , NULL, get_xpath_content },
     { UNIT,             "//div[@class='IZ6rdc']"            , NULL, get_xpath_content },
     { HOLIDAY,          "//div[@class='c7r50']"             , NULL, get_xpath_content },
@@ -130,9 +130,11 @@ ava_parsing_run(struct Ava *ava)
 
 	for (int i = 1; i < PARSING_TYPE_CAP; i++) {
 		if (parsingList[i].data != NULL) {
-			printf("\n・ %s\n", parsingList[i].data);
+			printf("\n%s\n", result + 1, parsingList[i].data);
 		}
 	}
+
+    printf("\n");
 
     return 0;
 }

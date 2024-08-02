@@ -55,9 +55,9 @@ ava_run(int argc, char *argv[])
     if (ava_get_flags(ava, argc, argv) == -1)
         return;
 
-    // send_http_request(ava);
+    send_http_request(ava);
 
-    read_string_file(ava->response, "test.html");
+    // read_string_file(ava->response, "test.html");
 
     if (ava->flag->save) {
         if (ava_save_response() == -1) {
